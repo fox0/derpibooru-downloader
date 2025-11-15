@@ -5,21 +5,99 @@ use std::time::Duration;
 use const_format::concatcp;
 use reqwest::StatusCode;
 use reqwest::blocking::Client;
-use reqwest::header::{CONTENT_TYPE, HeaderMap, HeaderValue};
+// use reqwest::header::{
+//     ACCEPT, ACCEPT_LANGUAGE, CACHE_CONTROL, COOKIE, HeaderMap, HeaderValue,
+//     UPGRADE_INSECURE_REQUESTS, USER_AGENT,
+// };
 
+// use crate::config::CONFIG;
 use crate::models::{Image, Parameters, PerPage, SearchImages};
 
 const BASE_URL: &str = "https://derpibooru.org/api/v1/json";
 
+#[allow(clippy::expect_used)]
 static HTTP_CLIENT: LazyLock<Client> = LazyLock::new(|| {
-    let mut headers = HeaderMap::new();
-    headers.insert(
-        CONTENT_TYPE,
-        HeaderValue::from_static("application/json;charset=utf-8"),
-    );
+    // let mut headers = HeaderMap::new();
+    // headers.insert(ACCEPT, HeaderValue::from_static(&CONFIG.http.accept));
+    // headers.insert(
+    //     ACCEPT_LANGUAGE,
+    //     HeaderValue::from_static(&CONFIG.http.accept_language),
+    // );
+    // headers.insert(
+    //     CACHE_CONTROL,
+    //     HeaderValue::from_static(&CONFIG.http.cache_control),
+    // );
+    // headers.insert(COOKIE, HeaderValue::from_static(&CONFIG.http.cookie));
+    // headers.insert("priority", HeaderValue::from_static(&CONFIG.http.priority));
+    // // REFERER
+    // headers.insert(
+    //     "sec-ch-ua",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-arch",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_arch),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-bitness",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_bitness),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-full-version",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_full_version),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-full-version-list",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_full_version_list),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-mobile",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_mobile),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-model",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_model),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-platform",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_platform),
+    // );
+    // headers.insert(
+    //     "sec-ch-ua-platform-version",
+    //     HeaderValue::from_static(&CONFIG.http.sec_ch_ua_platform_version),
+    // );
+    // headers.insert(
+    //     "sec-fetch-dest",
+    //     HeaderValue::from_static(&CONFIG.http.sec_fetch_dest),
+    // );
+    // headers.insert(
+    //     "sec-fetch-mode",
+    //     HeaderValue::from_static(&CONFIG.http.sec_fetch_mode),
+    // );
+    // headers.insert(
+    //     "sec-fetch-site",
+    //     HeaderValue::from_static(&CONFIG.http.sec_fetch_site),
+    // );
+    // headers.insert(
+    //     "sec-fetch-user",
+    //     HeaderValue::from_static(&CONFIG.http.sec_fetch_user),
+    // );
+    // headers.insert(
+    //     UPGRADE_INSECURE_REQUESTS,
+    //     HeaderValue::from_static(&CONFIG.http.upgrade_insecure_requests),
+    // );
+    // headers.insert(
+    //     USER_AGENT,
+    //     HeaderValue::from_static(&CONFIG.http.user_agent),
+    // );
+    // headers.insert(
+    //     CONTENT_TYPE,
+    //     HeaderValue::from_static("application/json;charset=utf-8"),
+    // );
+    // dbg!(&headers);
 
     Client::builder()
-        .default_headers(headers)
+        // .default_headers(headers)
         .build()
         .expect("http builder error")
 });
@@ -54,8 +132,14 @@ impl<'a> ApiSearchImages<'a> {
             return Ok(None);
         }
 
-        // Rate Limits 20 requests per 10 seconds
-        thread::sleep(Duration::from_millis(250));
+        // https://derpibooru.org/forums/meta/topics/site-development-notification-and-feedback-thread?post_id=5775592#post_5775592
+
+        // Due to recent attacks, we have changed API search rate limits.
+        // Before: 20 requests per 10 seconds
+        // After: 10 requests per 10 seconds
+        // Sorry for any inconvenience. Please adjust your API clients/bots accordingly.
+        // Note: this does not affect non-API clients, so if you’re just browsing the site, you can safely disregard this notice
+        thread::sleep(Duration::from_millis(1100));
 
         let request = HTTP_CLIENT.get(Self::URL).query(&self.params).build()?;
         log::info!("{} {}", &request.method(), &request.url());
@@ -64,8 +148,7 @@ impl<'a> ApiSearchImages<'a> {
         log::info!("{}", response.status());
         assert!(response.status() == StatusCode::OK);
 
-        let r: SearchImages = if cfg!(debug_assertions) {
-            log::warn!("DEBUG!");
+        let r: SearchImages = {
             let rrr = response.text()?;
             // log::debug!("<<< {}", rrr);
             let jd = &mut serde_json::Deserializer::from_str(&rrr);
@@ -77,8 +160,6 @@ impl<'a> ApiSearchImages<'a> {
                     todo!();
                 }
             }
-        } else {
-            response.json()?
         };
 
         self.params.page += 1;
@@ -101,46 +182,3 @@ impl Iterator for ApiSearchImages<'_> {
         }
     }
 }
-
-// pub fn search_images(mut params: Parameters) -> anyhow::Result<Vec<Image>> {
-//     const URL: &str = concatcp!(BASE_URL, "/search/images");
-//     params.per_page = 50.try_into()?;
-
-//     let mut result = vec![];
-//     loop {
-//         let request = HTTP_CLIENT.get(URL).query(&params).build()?;
-//         log::info!("{} {}", &request.method(), &request.url());
-
-//         let response = HTTP_CLIENT.execute(request)?;
-//         log::info!("{}", response.status());
-//         assert!(response.status() == StatusCode::OK);
-
-//         let mut r: SearchImages = if cfg!(debug_assertions) {
-//             log::warn!("DEBUG!");
-//             let rrr = response.text()?;
-//             // log::debug!("<<< {}", rrr);
-//             let jd = &mut serde_json::Deserializer::from_str(&rrr);
-//             match serde_path_to_error::deserialize(jd) {
-//                 Ok(v) => v,
-//                 Err(err) => {
-//                     let path = err.path().to_string();
-//                     log::error!("{}", path);
-//                     todo!();
-//                 }
-//             }
-//         } else {
-//             response.json()?
-//         };
-
-//         let len = r.images.len();
-//         result.append(&mut r.images);
-//         log::info!("{} of {}", result.len(), r.total);
-//         if len < usize::from(params.per_page) {
-//             break;
-//         }
-//         params.page += 1;
-//         thread::sleep(Duration::from_millis(250));
-//     }
-
-//     Ok(result)
-// }

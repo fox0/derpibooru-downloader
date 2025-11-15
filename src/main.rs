@@ -19,18 +19,16 @@ mod models;
 struct Cli {
     /// The current search query. Examples:
     ///
-    /// "first_seen_at.gt:8 days ago,score.gt:40,-my:watched,-ai generated,-ai composition"
+    /// "first_seen_at.gt:8 days ago,score.gt:50,-my:watched,-ai generated,-ai composition"
     ///
     /// "my:watched,first_seen_at.gt:8 days ago" | wget -c -i - -P watched
     query: String,
     /// Write output to <file> instead of stdout
     #[arg(short, long, value_name = "file")]
     output: Option<PathBuf>,
-
-    //todo limit .take()
 }
 
-pub fn init_log() {
+fn init_log() {
     let _ = TermLogger::init(
         LevelFilter::Debug,
         Config::default(),
@@ -48,9 +46,7 @@ fn main() {
         q: Some(cli.query),
         ..Default::default()
     };
-    // let r = search_images(params).unwrap();
     let r = ApiSearchImages::new(params);
-    // dbg!(&r);
 
     let mut file = match cli.output {
         Some(path) => File::create(path).map(|f| Box::new(f) as Box<dyn Write>),
@@ -62,6 +58,3 @@ fn main() {
         writeln!(file, "{}", i.unwrap().representations.full).unwrap();
     }
 }
-
-// wget -c -i watched.txt -P watched
-// | wget -c -i - -P watched
