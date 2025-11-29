@@ -19,7 +19,7 @@ mod models;
 struct Cli {
     /// The current search query. Examples:
     ///
-    /// "first_seen_at.gt:8 days ago,score.gt:50,-my:watched,-ai generated,-ai composition"
+    /// "first_seen_at.gt:8 days ago,score.gt:60,-my:watched"
     ///
     /// "my:watched,first_seen_at.gt:8 days ago" | wget -c -i - -P watched
     query: String,

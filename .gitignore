@@ -1,2 +1,4 @@
 /target
+/report.json
+/report.html
 *.txt
