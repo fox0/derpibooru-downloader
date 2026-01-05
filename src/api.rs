@@ -97,6 +97,7 @@ static HTTP_CLIENT: LazyLock<Client> = LazyLock::new(|| {
     // dbg!(&headers);
 
     Client::builder()
+        .http1_only()
         // .default_headers(headers)
         .build()
         .expect("http builder error")
@@ -141,12 +142,7 @@ impl<'a> ApiSearchImages<'a> {
         // Note: this does not affect non-API clients, so if you’re just browsing the site, you can safely disregard this notice
         thread::sleep(Duration::from_millis(1100));
 
-        let url = format!(
-            "{}?{}",
-            Self::URL,
-            serde_urlencoded::to_string(&self.params)?
-        );
-        let request = HTTP_CLIENT.get(url).build()?;
+        let request = HTTP_CLIENT.get(Self::URL).query(&self.params).build()?;
         log::info!("{} {}", &request.method(), &request.url());
 
         let response = HTTP_CLIENT.execute(request)?;
