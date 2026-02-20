@@ -3,7 +3,8 @@
 use std::sync::LazyLock;
 
 use dirs::config_dir;
-use serde::Deserialize;
+// use serde::Deserialize;
+use serde_derive::Deserialize;
 
 pub static CONFIG: LazyLock<Config> = LazyLock::new(Config::new);
 

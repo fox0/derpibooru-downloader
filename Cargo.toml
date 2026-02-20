@@ -28,14 +28,20 @@ version = "0.13"
 default-features = false
 features = [
     "blocking",
+#    "brotli",
+#    "deflate",
+#    "http2",
+#    "gzip",
     "json",
     "native-tls",
     "query",
+#    "stream",
     "system-proxy",
+#    "zstd",
 ]
 
 [dependencies.toml]
-version = "0.9"
+version = "1"
 default-features = false
 features = ["parse", "serde"]
 

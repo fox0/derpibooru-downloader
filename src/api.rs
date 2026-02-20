@@ -6,7 +6,7 @@ use const_format::concatcp;
 use reqwest::StatusCode;
 use reqwest::blocking::Client;
 // use reqwest::header::{
-//     ACCEPT, ACCEPT_LANGUAGE, CACHE_CONTROL, COOKIE, HeaderMap, HeaderValue,
+// CONTENT_ENCODING, //     ACCEPT, ACCEPT_LANGUAGE, CACHE_CONTROL, COOKIE, HeaderMap, HeaderValue,
 //     UPGRADE_INSECURE_REQUESTS, USER_AGENT,
 // };
 
@@ -146,6 +146,7 @@ impl<'a> ApiSearchImages<'a> {
         log::info!("{} {}", &request.method(), &request.url());
 
         let response = HTTP_CLIENT.execute(request)?;
+        // dbg!(response.headers());
         log::info!("{}", response.status());
         assert!(response.status() == StatusCode::OK);
 
