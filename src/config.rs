@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR Apache-2.0
+
 // https://github.com/fox0/derpibooru-proxy/blob/master/src/config.rs
 
 use std::sync::LazyLock;

@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+# cargo install --locked cargo-audit
+
+[advisories]
+informational_warnings = ["unmaintained", "unsound"]
+
+[output]
+deny = ["warnings"]
+quiet = false

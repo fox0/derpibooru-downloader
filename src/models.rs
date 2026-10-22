@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT OR Apache-2.0
+
 // https://derpibooru.org/pages/api
 // https://github.com/fox0/derpibooru-proxy/blob/master/src/models.rs
 // https://transform.tools/json-to-rust-serde
