@@ -2,20 +2,18 @@
 
 use std::sync::LazyLock;
 
-use dirs::config_dir;
-// use serde::Deserialize;
-use serde_derive::Deserialize;
+use dirs;
 
 pub static CONFIG: LazyLock<Config> = LazyLock::new(Config::new);
 
 /// Конфиг приложения
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde_derive::Deserialize)]
 pub struct Config {
     pub api_key: Option<String>,
     // pub http: Http,
 }
 
-// #[derive(Debug, Deserialize)]
+// #[derive(Debug, serde_derive::Deserialize)]
 // #[serde(rename_all = "kebab-case")]
 // pub struct Http {
 //     pub accept: String,
@@ -45,7 +43,7 @@ impl Config {
     #[expect(clippy::unwrap_used)]
     #[expect(clippy::expect_used)]
     fn new() -> Self {
-        let mut path = config_dir().unwrap();
+        let mut path = dirs::config_dir().unwrap();
         path.push(env!("CARGO_PKG_NAME"));
         path.set_extension("toml");
 

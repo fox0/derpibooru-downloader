@@ -1,5 +1,4 @@
 use std::fs::File;
-use std::io::{self, Write};
 use std::path::PathBuf;
 
 use clap::Parser;
@@ -39,6 +38,8 @@ fn init_log() {
 
 #[expect(clippy::unwrap_used)]
 fn main() {
+    use std::io::{self, Write};
+
     init_log();
     let cli = Cli::parse();
 

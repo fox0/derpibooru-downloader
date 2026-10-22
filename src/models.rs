@@ -5,13 +5,12 @@
 use std::ops::{Add, AddAssign, Mul, Sub};
 
 use anyhow::anyhow;
-use serde_derive::{Deserialize, Serialize};
 
 use crate::config::CONFIG;
 
 /// This is a list of general parameters that are useful when working with the API.
 /// Not all parameters may be used in every request.
-#[derive(Debug, Default, Serialize)]
+#[derive(Debug, Default, serde_derive::Serialize)]
 pub struct Parameters<'a> {
     /// Assuming the user can access the filter ID given by the parameter,
     /// overrides the current filter for this request.
@@ -35,7 +34,7 @@ pub struct Parameters<'a> {
 }
 
 /// An optional authentication token.
-#[derive(Debug, Serialize)]
+#[derive(Debug, serde_derive::Serialize)]
 pub struct Key<'a>(&'a Option<String>);
 
 impl Default for Key<'_> {
@@ -46,7 +45,7 @@ impl Default for Key<'_> {
 
 /// Controls the current page of the response, if the response is paginated.
 /// Empty values default to the first page.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, Clone, Copy, serde_derive::Serialize)]
 pub struct Page(usize);
 
 impl Default for Page {
@@ -91,7 +90,7 @@ impl AddAssign<usize> for Page {
 
 /// Controls the number of results per page, up to a limit of 50, if the response is paginated.
 /// The default is 25.
-#[derive(Debug, Clone, Copy, Serialize)]
+#[derive(Debug, Clone, Copy, serde_derive::Serialize)]
 pub struct PerPage(usize);
 
 impl PerPage {
@@ -148,7 +147,7 @@ impl From<PerPage> for usize {
 }
 
 #[expect(dead_code)]
-#[derive(Debug, Serialize)]
+#[derive(Debug, serde_derive::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SortField {
     // ("id", "Sort by image ID"),
@@ -172,7 +171,7 @@ pub enum SortField {
 }
 
 #[expect(dead_code)]
-#[derive(Debug, Serialize)]
+#[derive(Debug, serde_derive::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SortDirection {
     /// Ascending
@@ -182,7 +181,7 @@ pub enum SortDirection {
 }
 
 // https://derpibooru.org/api/v1/json/search/images?q=safe
-#[derive(Debug, Deserialize)]
+#[derive(Debug, serde_derive::Deserialize)]
 pub struct SearchImages {
     pub total: usize,
     pub images: Vec<Image>,
@@ -190,7 +189,7 @@ pub struct SearchImages {
 }
 
 // #[expect(dead_code)]
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, serde_derive::Deserialize)]
 pub struct Image {
     pub representations: Representations,
     // pub spoilered: bool,
@@ -242,7 +241,7 @@ pub struct Image {
 // }
 
 // #[expect(dead_code)]
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Debug, Clone, serde_derive::Deserialize)]
 pub struct Representations {
     pub full: String,
     // pub small: String,
