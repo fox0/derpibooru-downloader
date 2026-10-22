@@ -15,7 +15,7 @@ use crate::models::{Image, Parameters, PerPage, SearchImages};
 
 const BASE_URL: &str = "https://derpibooru.org/api/v1/json";
 
-#[allow(clippy::expect_used)]
+#[expect(clippy::expect_used)]
 static HTTP_CLIENT: LazyLock<Client> = LazyLock::new(|| {
     // let mut headers = HeaderMap::new();
     // headers.insert(ACCEPT, HeaderValue::from_static(&CONFIG.http.accept));

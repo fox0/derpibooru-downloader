@@ -147,7 +147,7 @@ impl From<PerPage> for usize {
     }
 }
 
-#[allow(dead_code)]
+#[expect(dead_code)]
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SortField {
@@ -171,7 +171,7 @@ pub enum SortField {
     // ("duration", "Sort by duration"),
 }
 
-#[allow(dead_code)]
+#[expect(dead_code)]
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SortDirection {
@@ -189,7 +189,7 @@ pub struct SearchImages {
     // pub interactions: Vec<Value>,
 }
 
-// #[allow(dead_code)]
+// #[expect(dead_code)]
 #[derive(Debug, Clone, Deserialize)]
 pub struct Image {
     pub representations: Representations,
@@ -241,7 +241,7 @@ pub struct Image {
 //     pub se: f64,
 // }
 
-// #[allow(dead_code)]
+// #[expect(dead_code)]
 #[derive(Debug, Clone, Deserialize)]
 pub struct Representations {
     pub full: String,

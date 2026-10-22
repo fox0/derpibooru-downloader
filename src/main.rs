@@ -37,7 +37,7 @@ fn init_log() {
     );
 }
 
-#[allow(clippy::unwrap_used)]
+#[expect(clippy::unwrap_used)]
 fn main() {
     init_log();
     let cli = Cli::parse();

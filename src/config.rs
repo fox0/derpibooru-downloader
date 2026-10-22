@@ -42,8 +42,8 @@ pub struct Config {
 // }
 
 impl Config {
-    #[allow(clippy::unwrap_used)]
-    #[allow(clippy::expect_used)]
+    #[expect(clippy::unwrap_used)]
+    #[expect(clippy::expect_used)]
     fn new() -> Self {
         let mut path = config_dir().unwrap();
         path.push(env!("CARGO_PKG_NAME"));
